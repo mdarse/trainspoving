@@ -12,10 +12,19 @@ Server.prototype.sendRfid = function(data){
     isForm = false;
 
     var data = http.post(url, dataPost , header, isForm);
-    //log(data.header)
-    //log(JSON.stringify(data));
 
-    //log(JSON.stringify({foo: 'bar' }));
+    if(data){
+        //Processing data received
+        //... here 
 
-    karotz.tts.start(data, "fr");
+        // Karotz says sentence like : Le train en provenance de *Nom gare* arrivera en gare dans *Nombre de minute*.
+        var sentence;
+        karotz.tts.start(sentence, "fr");
+
+        //Return the time before train for display in POV.
+        return timeBeforeTrain;
+    }else{
+        return false;
+    };
+    
 };
