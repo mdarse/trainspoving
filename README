@@ -18,15 +18,9 @@ FILES
 - descriptor.xml
 - screen.xml
 - util.js
-
-
 - main.js
-
 - Server.js
-
 - Display.js
-
-
 
 HELP
 ====
