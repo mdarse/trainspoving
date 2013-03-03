@@ -1,0 +1,12 @@
+<descriptor>
+    <version>1.1.8</version>
+    <accesses>
+        <access>tts</access>
+        <access>button</access>
+        <access>http</access>
+        <access>rfid</access>
+        <access>ears</access>
+        <access>led</access>
+        <access>serial</access>
+    </accesses>
+</descriptor>
