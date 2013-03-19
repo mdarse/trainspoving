@@ -36,6 +36,7 @@ include("util.js");
       var boot = function(data) {
         karotz.serial.open("/dev/ttyGS0", 9600);
         log("-------------------");
+        log("TransPOVing started");
         try { callback(data); }
         catch (e) { log(e); exit(); }
       };
@@ -66,6 +67,16 @@ include("util.js");
 
   karotz.boot(function(data) {
     // dump(this);
+    // var path = '/usr/karotz/apps/' + appName +'/sncf.mp3';
+    var path = 'http://dl1.audiko.net/get/preview/149100/19066299/SNCF-Sncf.mp3?k=e07e6385a78a596ea4426621c2f81d2e';
+    log("Play SNCF jingle");
+    karotz.multimedia.play(path, function(event) {
+      log("SongEvent: " + event);
+      if (event == 'TERMINATED') {
+        karotz.tts.start("TrainsPOVing vous souhaite la bienvenue.", 'fr');
+      }
+    });
+
     // Start app
     var app = new App();
     app.start();
