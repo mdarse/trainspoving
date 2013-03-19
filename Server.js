@@ -1,30 +1,23 @@
-var Server = function (){
-	
+var Server = function (baseUrl){
+	this.baseUrl = baseUrl;
 };
 
-Server.prototype.sendRfid = function(data){
-	url = "http://paulinelherbette.fr/work/arduino/arduino.php";
-    dataPost = {
-        "rfid": data.id
-    };
+Server.prototype.addRfid = function(id, type, color) {
+	var url = this.baseUrl + "/rfid",
+      data = { id: id };
+  if (type) data['type'] = type;
+  if (color) data['color'] = color;
+  var response = http.post2(url, data);
+  var statusCode = response.header.substr(9, 3);
+  if (statusCode == 201) return true;
+  return false;
+};
 
-    header = {"headerKey": "headerValue"};
-    isForm = false;
+Server.prototype.fetchReminders = function() {
+  var url = this.baseUrl + '/reminders';
+  var response = http.get2(url);
+  if (!response || !response.content) return false;
+  this.reminders = JSON.parse(response.content);
 
-    var data = http.post(url, dataPost , header, isForm);
-
-    if(data){
-        //Processing data received
-        //... here 
-
-        // Karotz says sentence like : Le train en provenance de *Nom gare* arrivera en gare dans *Nombre de minute*.
-        var sentence;
-        karotz.tts.start(sentence, "fr");
-
-        //Return the time before train for display in POV.
-        return timeBeforeTrain;
-    }else{
-        return false;
-    };
-    
+  return this.reminders;
 };

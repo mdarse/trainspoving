@@ -1,7 +1,8 @@
-include("util.js");
+include('server.js');
 
 (function(_log) {
   var host = 'localhost';
+  var apiBaseUrl = 'http://trainspoving.mathieudarse.fr/api';
 
   function log(message) {
     var now = new Date(),
@@ -48,6 +49,7 @@ include("util.js");
   };
 
   var App = function() {
+    this.server = new Server(apiBaseUrl);
   };
   App.prototype.start = function() {
     var that = this;
@@ -57,9 +59,37 @@ include("util.js");
       that.onRfid(data);
     };
     karotz.rfid.addListener(rfidListener);
+
+    log("Fetching reminders...");
+    this.reminders = this.server.fetchReminders();
+    log("OK");
   };
   App.prototype.onRfid = function(data) {
     log("RFID " + data.id);
+    var reminder = this.findReminder(data.id);
+    if (!reminder) {
+      log("No reminder found, submiting tag to API...");
+      // TODO say what we do here
+      var response = this.server.addRfid(data.id, data.type, data.color);
+      if (!response) {
+        log('Error');
+        return;
+      }
+      log('OK');
+      // throw new Error("Unable to POST new RFID tag.");
+    } else {
+      log("Found matching reminder");
+      log(reminder);
+    }
+  };
+  App.prototype.findReminder = function(tagId) {
+    for (var i = 0, l = this.reminders.length; i < l; i++) {
+      var reminder = this.reminders[i];
+      if (reminder.rfid && reminder.rfid === tagId) {
+        return reminder;
+      }
+    }
+    return null;
   };
   App.prototype.hello = function() {
     log("Hello World!");
