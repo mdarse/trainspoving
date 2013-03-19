@@ -1,7 +1,9 @@
+include('display.js');
 include('server.js');
 
 (function(_log) {
   var host = 'localhost';
+  var displayHost = '192.168.1.30';
   var apiBaseUrl = 'http://trainspoving.mathieudarse.fr/api';
 
   function log(message) {
@@ -49,6 +51,8 @@ include('server.js');
   };
 
   var App = function() {
+    // Init POV display & web service
+    this.display = new Display(displayHost);
     this.server = new Server(apiBaseUrl);
   };
   App.prototype.start = function() {
@@ -80,6 +84,9 @@ include('server.js');
     } else {
       log("Found matching reminder");
       log(reminder);
+      // TODO speak
+      var end = new Date(reminder.date);
+      this.startCountdown(end);
     }
   };
   App.prototype.findReminder = function(tagId) {
@@ -90,6 +97,12 @@ include('server.js');
       }
     }
     return null;
+  };
+  App.prototype.startCountdown = function(end) {
+    var remaining = end - new Date(); // gives seconds
+    log("Remaining time " + remaining);
+    // this.display.setCountdown(remaining);
+    this.display.setText('00:00   ');
   };
   App.prototype.hello = function() {
     log("Hello World!");
