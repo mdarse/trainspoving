@@ -14,7 +14,22 @@ include("util.js");
       // Java KarotzVM
       _log(message);
   }
+
+  function dump(data) {
+    var stack = [];
+    function eachRecursive(obj) {
+      for (var k in obj) {
+        stack.push(k);
+        if (typeof obj[k] == "object") {
+          eachRecursive(obj[k]);
+        }
+        else
+          log(stack.join('.') + ": " + obj[k]);
+        stack.pop();
+      }
     }
+    eachRecursive(data);
+  }
 
   karotz.boot = function(callback, data) {
     try {
@@ -50,6 +65,7 @@ include("util.js");
   };
 
   karotz.boot(function(data) {
+    // dump(this);
     // Start app
     var app = new App();
     app.start();
